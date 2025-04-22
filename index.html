@@ -58,6 +58,18 @@
     // Mostrar botón inicialmente para depurar
     installButton.style.display = 'block';
 
+    // Verificar si el manifest está cargado
+    fetch('/manifest.json')
+      .then(response => {
+        if (!response.ok) throw new Error('No se pudo cargar el manifest.json');
+        console.log('manifest.json cargado correctamente');
+      })
+      .catch(err => {
+        console.error('Error al cargar manifest.json:', err.message);
+        statusMessage.style.display = 'block';
+        statusMessage.textContent = 'Error: No se pudo cargar el manifest.json';
+      });
+
     // Manejar beforeinstallprompt
     window.addEventListener('beforeinstallprompt', (e) => {
       console.log('Evento beforeinstallprompt disparado');
@@ -104,6 +116,15 @@
       statusMessage.style.display = 'block';
       statusMessage.textContent = 'PWA instalada con éxito';
     });
+
+    // Verificar si beforeinstallprompt no se dispara
+    setTimeout(() => {
+      if (!deferredPrompt) {
+        console.log('beforeinstallprompt no se disparó después de 10 segundos');
+        statusMessage.style.display = 'block';
+        statusMessage.textContent = 'Esperando criterios de instalación...';
+      }
+    }, 10000);
   </script>
 </body>
 </html>
