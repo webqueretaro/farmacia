@@ -1,0 +1,16 @@
+body {
+    font-family: sans-serif;
+    padding: 2em;
+    text-align: center;
+    background: #f9f9f9;
+  }
+  
+  h1 {
+    color: #2f3ba2;
+  }
+  
+  img {
+    margin-top: 1em;
+    border-radius: 10px;
+  }
+  
