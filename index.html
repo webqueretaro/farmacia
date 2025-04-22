@@ -1,20 +1,144 @@
-{
-  "name": "Farmacia Querétaro",
-  "short_name": "Farmacia QRO",
-  "start_url": "/index.html",
-  "display": "standalone",
-  "background_color": "#ACF7F8",
-  "theme_color": "#ACF7F8",
-  "icons": [
-    {
-      "src": "/icon.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "/icon.png",
-      "sizes": "512x512",
-      "type": "image/png"
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Farmacia Querétaro</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#ACF7F8">
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
     }
-  ]
-}
+    h1 {
+      color: #333;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    button {
+      background-color: #007BFF;
+      color: white;
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      display: none;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    p {
+      font-size: 18px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+    #statusMessage {
+      font-size: 14px;
+      color: blue;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Farmacia Querétaro</h1>
+  <p>Te invitamos a descargar la app para ver las ofertas</p>
+  <p id="statusMessage"></p>
+  <button id="installButton">Descargar app</button>
+  <script>
+    let deferredPrompt;
+    const installButton = document.getElementById('installButton');
+    const statusMessage = document.getElementById('statusMessage');
+
+    // Mostrar botón inicialmente para depurar
+    installButton.style.display = 'block';
+
+    // Verificar si el manifest y el ícono están cargados
+    fetch('/manifest.json')
+      .then(response => {
+        if (!response.ok) throw new Error('No se pudo cargar el manifest.json');
+        console.log('manifest.json cargado correctamente');
+        return fetch('/icon.png');
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('No se pudo cargar el icon.png');
+        console.log('icon.png cargado correctamente');
+      })
+      .catch(err => {
+        console.error('Error al cargar recursos:', err.message);
+        statusMessage.style.display = 'block';
+        statusMessage.textContent = 'Error: ' + err.message;
+      });
+
+    // Manejar beforeinstallprompt
+    window.addEventListener('beforeinstallprompt', (e) => {
+      console.log('Evento beforeinstallprompt disparado');
+      e.preventDefault();
+      deferredPrompt = e;
+      statusMessage.style.display = 'block';
+      statusMessage.textContent = 'Listo para instalar';
+      installButton.style.display = 'block';
+    });
+
+    // Manejar clic en el botón
+    installButton.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        console.log('Solicitando instalación de la PWA');
+        try {
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          console.log(`Resultado de la instalación: ${outcome}`);
+          if (outcome === 'accepted') {
+            console.log('Usuario aceptó instalar la PWA');
+            statusMessage.textContent = 'PWA instalada con éxito';
+          } else {
+            console.log('Usuario rechazó instalar la PWA');
+            statusMessage.textContent = 'Instalación cancelada';
+          }
+          deferredPrompt = null;
+          installButton.style.display = 'none';
+        } catch (err) {
+          console.error('Error durante la instalación:', err.message);
+          statusMessage.style.display = 'block';
+          statusMessage.textContent = 'Error: No se pudo instalar.';
+        }
+      } else {
+        console.error('No se puede instalar: deferredPrompt no disponible');
+        statusMessage.style.display = 'block';
+        statusMessage.textContent = 'Error: No se puede instalar. Verifica la consola.';
+      }
+    });
+
+    // Ocultar botón tras instalación
+    window.addEventListener('appinstalled', () => {
+      console.log('PWA instalada con éxito');
+      installButton.style.display = 'none';
+      deferredPrompt = null;
+      statusMessage.style.display = 'block';
+      statusMessage.textContent = 'PWA instalada con éxito';
+    });
+
+    // Verificar si beforeinstallprompt no se dispara
+    setTimeout(() => {
+      if (!deferredPrompt) {
+        console.log('beforeinstallprompt no se disparó después de 15 segundos');
+        statusMessage.style.display = 'block';
+        statusMessage.textContent = 'Esperando criterios de instalación...';
+      }
+    }, 15000);
+
+    // Verificar si ya está instalada
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      console.log('La PWA ya está instalada y corriendo en modo standalone');
+      statusMessage.style.display = 'block';
+      statusMessage.textContent = 'La PWA ya está instalada';
+      installButton.style.display = 'none';
+    }
+  </script>
+</body>
+</html>
