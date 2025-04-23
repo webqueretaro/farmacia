@@ -16,7 +16,7 @@
     body {
       text-align: center;
       font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
+      background-color: #acf7f8; /* Igual que el splash */
       margin: 0;
       padding: 20px;
     }
@@ -67,21 +67,14 @@
     fetch('manifest.json')
       .then(response => {
         if (!response.ok) throw new Error('No se pudo cargar el manifest.json');
-        console.log('manifest.json cargado correctamente');
         return fetch('icon-512.png');
       })
-      .then(response => {
-        if (!response.ok) throw new Error('No se pudo cargar el icon-512.png');
-        console.log('icon-512.png cargado correctamente');
-      })
       .catch(err => {
-        console.error('Error al cargar recursos:', err.message);
         statusMessage.style.display = 'block';
         statusMessage.textContent = 'Error: ' + err.message;
       });
 
     window.addEventListener('beforeinstallprompt', (e) => {
-      console.log('Evento beforeinstallprompt disparado');
       e.preventDefault();
       deferredPrompt = e;
       statusMessage.style.display = 'block';
@@ -91,44 +84,30 @@
 
     installButton.addEventListener('click', async () => {
       if (deferredPrompt) {
-        console.log('Solicitando instalación de la PWA');
         try {
           deferredPrompt.prompt();
           const { outcome } = await deferredPrompt.userChoice;
-          console.log(`Resultado de la instalación: ${outcome}`);
-          if (outcome === 'accepted') {
-            statusMessage.textContent = 'PWA instalada con éxito';
-          } else {
-            statusMessage.textContent = 'Instalación cancelada';
-          }
+          statusMessage.textContent =
+            outcome === 'accepted'
+              ? 'PWA instalada con éxito'
+              : 'Instalación cancelada';
           deferredPrompt = null;
           installButton.style.display = 'none';
-        } catch (err) {
-          console.error('Error durante la instalación:', err.message);
-          statusMessage.style.display = 'block';
+        } catch {
           statusMessage.textContent = 'Error: No se pudo instalar.';
         }
       } else {
-        statusMessage.textContent = 'Error: No se puede instalar. Verifica la consola.';
+        statusMessage.textContent = 'Error: No se puede instalar.';
       }
     });
 
     window.addEventListener('appinstalled', () => {
-      console.log('PWA instalada con éxito');
       installButton.style.display = 'none';
       deferredPrompt = null;
       statusMessage.textContent = 'PWA instalada con éxito';
     });
 
-    setTimeout(() => {
-      if (!deferredPrompt) {
-        statusMessage.style.display = 'block';
-        statusMessage.textContent = 'Esperando criterios de instalación...';
-      }
-    }, 15000);
-
     if (window.matchMedia('(display-mode: standalone)').matches) {
-      statusMessage.style.display = 'block';
       statusMessage.textContent = 'La PWA ya está instalada';
       installButton.style.display = 'none';
     }
