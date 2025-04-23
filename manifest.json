@@ -7,8 +7,8 @@
   "theme_color": "#ACF7F8",
   "icons": [
     {
-      "src": "/farmacia/icon-519.png",
-      "sizes": "519x519",
+      "src": "/farmacia/icon-512.png",
+      "sizes": "512x512",
       "type": "image/png"
     }
   ]
