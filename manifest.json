@@ -3,7 +3,7 @@
   "short_name": "Farmacia",
   "start_url": "splash.html",
   "display": "standalone",
-  "background_color": "#b8f5b0",
+  "background_color": "#acf7f8",
   "theme_color": "#b8f5b0",
   "icons": [
     {
