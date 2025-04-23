@@ -1,13 +1,13 @@
 {
   "name": "Farmacia",
-  "short_name": "Farmacia QRO",
-  "start_url": "/farmacia/index.html",
+  "short_name": "Farmacia",
+  "start_url": "splash.html",
   "display": "standalone",
-  "background_color": "#ACF7F8",
-  "theme_color": "#ACF7F8",
+  "background_color": "#b8f5b0",
+  "theme_color": "#b8f5b0",
   "icons": [
     {
-      "src": "/farmacia/icon-512.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
