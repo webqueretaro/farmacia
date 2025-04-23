@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Farmacia</title>
-  <link rel="manifest" href="/farmacia/manifest.json">
-  <meta name="theme-color" content="#ACF7F8">
+
+  <!-- Favicon -->
+  <link rel="icon" href="icon-512.png" />
+
+  <!-- Manifest y theme color -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#acf7f8" />
+
   <style>
     body {
       text-align: center;
@@ -58,57 +64,73 @@
 
     installButton.style.display = 'block';
 
-    // Verifica si los recursos del manifest se cargan correctamente
-    fetch('/farmacia/manifest.json')
+    fetch('manifest.json')
       .then(response => {
         if (!response.ok) throw new Error('No se pudo cargar el manifest.json');
-        return fetch('/farmacia/icon-519.png');
+        console.log('manifest.json cargado correctamente');
+        return fetch('icon-512.png');
       })
       .then(response => {
-        if (!response.ok) throw new Error('No se pudo cargar el icono');
+        if (!response.ok) throw new Error('No se pudo cargar el icon-512.png');
+        console.log('icon-512.png cargado correctamente');
       })
       .catch(err => {
+        console.error('Error al cargar recursos:', err.message);
         statusMessage.style.display = 'block';
         statusMessage.textContent = 'Error: ' + err.message;
       });
 
     window.addEventListener('beforeinstallprompt', (e) => {
+      console.log('Evento beforeinstallprompt disparado');
       e.preventDefault();
       deferredPrompt = e;
-      installButton.style.display = 'block';
       statusMessage.style.display = 'block';
       statusMessage.textContent = 'Listo para instalar';
+      installButton.style.display = 'block';
     });
 
     installButton.addEventListener('click', async () => {
       if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-          statusMessage.textContent = 'PWA instalada con éxito';
-        } else {
-          statusMessage.textContent = 'Instalación cancelada';
+        console.log('Solicitando instalación de la PWA');
+        try {
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          console.log(`Resultado de la instalación: ${outcome}`);
+          if (outcome === 'accepted') {
+            statusMessage.textContent = 'PWA instalada con éxito';
+          } else {
+            statusMessage.textContent = 'Instalación cancelada';
+          }
+          deferredPrompt = null;
+          installButton.style.display = 'none';
+        } catch (err) {
+          console.error('Error durante la instalación:', err.message);
+          statusMessage.style.display = 'block';
+          statusMessage.textContent = 'Error: No se pudo instalar.';
         }
-        deferredPrompt = null;
-        installButton.style.display = 'none';
+      } else {
+        statusMessage.textContent = 'Error: No se puede instalar. Verifica la consola.';
       }
     });
 
     window.addEventListener('appinstalled', () => {
-      statusMessage.textContent = 'PWA instalada con éxito';
+      console.log('PWA instalada con éxito');
       installButton.style.display = 'none';
+      deferredPrompt = null;
+      statusMessage.textContent = 'PWA instalada con éxito';
     });
 
+    setTimeout(() => {
+      if (!deferredPrompt) {
+        statusMessage.style.display = 'block';
+        statusMessage.textContent = 'Esperando criterios de instalación...';
+      }
+    }, 15000);
+
     if (window.matchMedia('(display-mode: standalone)').matches) {
+      statusMessage.style.display = 'block';
       statusMessage.textContent = 'La PWA ya está instalada';
       installButton.style.display = 'none';
-    }
-
-    // Registro de service worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/farmacia/service-worker.js')
-        .then(reg => console.log('SW registrado', reg))
-        .catch(err => console.error('Error al registrar SW:', err));
     }
   </script>
 </body>
