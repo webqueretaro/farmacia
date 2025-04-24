@@ -1,18 +1,41 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Farmacia</title>
-  <link rel="manifest" href="manifest.json" />
+  <link rel="manifest" href="/farmacia/manifest.json">
+  <meta name="theme-color" content="#ACF7F8">
   <link rel="icon" href="icon-512.png" />
-  <meta name="theme-color" content="#acf7f8" />
   <style>
-    body {
-      text-align: center;
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
+    body, html {
       margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #ACF7F8;
+      height: 100%;
+    }
+
+    #welcomeScreen {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background-color: #ACF7F8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      flex-direction: column;
+    }
+
+    #welcomeScreen img {
+      width: 150px;
+      height: 150px;
+    }
+
+    #mainContent {
+      display: none;
+      text-align: center;
       padding: 20px;
     }
 
@@ -30,7 +53,6 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      transition: background-color 0.3s;
       display: none;
     }
 
@@ -41,70 +63,55 @@
     p {
       font-size: 18px;
       color: #333;
-      margin-bottom: 20px;
-    }
-
-    #statusMessage {
-      font-size: 14px;
-      color: blue;
-      display: none;
     }
   </style>
 </head>
 <body>
-  <h1>Farmacia</h1>
-  <p>Te invitamos a descargar la app para ver las ofertas</p>
-  <p id="statusMessage"></p>
-  <button id="installButton">Descargar app</button>
+  <div id="welcomeScreen">
+    <img src="icon-512.png" alt="Logo">
+  </div>
+
+  <div id="mainContent">
+    <h1>Farmacia</h1>
+    <p>Te invitamos a descargar la app para ver las ofertas</p>
+    <p id="statusMessage"></p>
+    <button id="installButton">Descargar app</button>
+  </div>
 
   <script>
     let deferredPrompt;
     const installButton = document.getElementById('installButton');
     const statusMessage = document.getElementById('statusMessage');
+    const welcomeScreen = document.getElementById('welcomeScreen');
+    const mainContent = document.getElementById('mainContent');
 
-    // Ocultar botón por defecto
-    installButton.style.display = 'none';
+    // Mostrar pantalla de bienvenida durante 5 segundos
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        welcomeScreen.style.display = 'none';
+        mainContent.style.display = 'block';
+      }, 5000);
+    });
 
-    // Detectar si la app ya está instalada
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-    if (isStandalone) {
-      console.log('La PWA ya está instalada');
-      statusMessage.textContent = '';
-      installButton.style.display = 'none';
-    }
-
-    // Manejar evento beforeinstallprompt
+    // Manejo de instalación PWA
     window.addEventListener('beforeinstallprompt', (e) => {
-      if (!isStandalone) {
-        e.preventDefault();
-        deferredPrompt = e;
-        installButton.style.display = 'block';
-        statusMessage.style.display = 'block';
-        statusMessage.textContent = 'Listo para instalar';
-      }
+      e.preventDefault();
+      deferredPrompt = e;
+      installButton.style.display = 'block';
     });
 
     installButton.addEventListener('click', async () => {
       if (deferredPrompt) {
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-          console.log('Usuario aceptó instalar');
-          installButton.style.display = 'none';
-          statusMessage.textContent = 'PWA instalada con éxito';
-        } else {
-          console.log('Usuario rechazó instalar');
-          statusMessage.textContent = 'Instalación cancelada';
-        }
         deferredPrompt = null;
+        installButton.style.display = 'none';
       }
     });
 
     window.addEventListener('appinstalled', () => {
-      console.log('PWA instalada');
       installButton.style.display = 'none';
-      statusMessage.style.display = 'block';
-      statusMessage.textContent = 'PWA instalada con éxito';
+      deferredPrompt = null;
     });
   </script>
 </body>
