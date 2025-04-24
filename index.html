@@ -4,27 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Farmacia</title>
-
-  <!-- Favicon -->
-  <link rel="icon" href="icon-512.png" />
-
-  <!-- Manifest y theme color -->
   <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icon-512.png" />
   <meta name="theme-color" content="#acf7f8" />
-
   <style>
     body {
       text-align: center;
       font-family: Arial, sans-serif;
-      background-color: #acf7f8; /* Igual que el splash */
+      background-color: #f4f4f4;
       margin: 0;
       padding: 20px;
     }
+
     h1 {
       color: #333;
       font-size: 24px;
       margin-bottom: 20px;
     }
+
     button {
       background-color: #007BFF;
       color: white;
@@ -36,14 +33,17 @@
       transition: background-color 0.3s;
       display: none;
     }
+
     button:hover {
       background-color: #0056b3;
     }
+
     p {
       font-size: 18px;
       color: #333;
       margin-bottom: 20px;
     }
+
     #statusMessage {
       font-size: 14px;
       color: blue;
@@ -62,55 +62,51 @@
     const installButton = document.getElementById('installButton');
     const statusMessage = document.getElementById('statusMessage');
 
-    installButton.style.display = 'block';
+    // Ocultar botón por defecto
+    installButton.style.display = 'none';
 
-    fetch('manifest.json')
-      .then(response => {
-        if (!response.ok) throw new Error('No se pudo cargar el manifest.json');
-        return fetch('icon-512.png');
-      })
-      .catch(err => {
-        statusMessage.style.display = 'block';
-        statusMessage.textContent = 'Error: ' + err.message;
-      });
+    // Detectar si la app ya está instalada
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    if (isStandalone) {
+      console.log('La PWA ya está instalada');
+      statusMessage.textContent = '';
+      installButton.style.display = 'none';
+    }
 
+    // Manejar evento beforeinstallprompt
     window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      statusMessage.style.display = 'block';
-      statusMessage.textContent = 'Listo para instalar';
-      installButton.style.display = 'block';
+      if (!isStandalone) {
+        e.preventDefault();
+        deferredPrompt = e;
+        installButton.style.display = 'block';
+        statusMessage.style.display = 'block';
+        statusMessage.textContent = 'Listo para instalar';
+      }
     });
 
     installButton.addEventListener('click', async () => {
       if (deferredPrompt) {
-        try {
-          deferredPrompt.prompt();
-          const { outcome } = await deferredPrompt.userChoice;
-          statusMessage.textContent =
-            outcome === 'accepted'
-              ? 'PWA instalada con éxito'
-              : 'Instalación cancelada';
-          deferredPrompt = null;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          console.log('Usuario aceptó instalar');
           installButton.style.display = 'none';
-        } catch {
-          statusMessage.textContent = 'Error: No se pudo instalar.';
+          statusMessage.textContent = 'PWA instalada con éxito';
+        } else {
+          console.log('Usuario rechazó instalar');
+          statusMessage.textContent = 'Instalación cancelada';
         }
-      } else {
-        statusMessage.textContent = 'Error: No se puede instalar.';
+        deferredPrompt = null;
       }
     });
 
     window.addEventListener('appinstalled', () => {
+      console.log('PWA instalada');
       installButton.style.display = 'none';
-      deferredPrompt = null;
+      statusMessage.style.display = 'block';
       statusMessage.textContent = 'PWA instalada con éxito';
     });
-
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-      statusMessage.textContent = 'La PWA ya está instalada';
-      installButton.style.display = 'none';
-    }
   </script>
 </body>
 </html>
+
