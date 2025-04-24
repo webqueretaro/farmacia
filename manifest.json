@@ -1,13 +1,13 @@
 {
   "name": "Farmacia",
   "short_name": "Farmacia",
-  "start_url": ".",
+  "start_url": "/farmacia/",
   "display": "fullscreen",
   "background_color": "#acf7f8",
   "theme_color": "#acf7f8",
   "icons": [
     {
-      "src": "icon-512.png",
+      "src": "/farmacia/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
