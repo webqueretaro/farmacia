@@ -2,66 +2,66 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="icon-512.png" />
   <meta name="theme-color" content="#acf7f8" />
   <title>Farmacia</title>
   <style>
-    * {
+    body, html {
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-    }
-    body, html {
-      width: 100%;
-      height: 100%;
-      font-family: Arial, sans-serif;
-    }
-    .splash {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
       background-color: #acf7f8;
+      height: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
-      z-index: 1000;
+      font-family: sans-serif;
     }
-    .splash img {
-      width: 150px;
-      height: 150px;
+
+    #welcome {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      opacity: 1;
+      transition: opacity 1s ease;
     }
-    .main-content {
+
+    #welcome img {
+      width: 120px; /* tamaño más pequeño para evitar salto */
+      height: 120px;
+      transition: transform 0.3s ease;
+    }
+
+    #main {
       display: none;
-      padding: 2rem;
-      background-color: #acf7f8;
-      height: 100vh;
+      flex-direction: column;
+      align-items: center;
     }
-    h1 {
-      font-size: 2rem;
-      text-align: center;
-      color: #000;
+
+    .hidden {
+      opacity: 0;
+      pointer-events: none;
     }
   </style>
 </head>
 <body>
-  <div class="splash">
-    <img src="icon-512.png" alt="Logo" />
+  <!-- Pantalla de bienvenida personalizada -->
+  <div id="welcome">
+    <img src="icon-512.png" alt="Icono de bienvenida" />
   </div>
-  <div class="main-content">
+
+  <!-- Pantalla principal -->
+  <div id="main">
     <h1>Farmacia</h1>
+    <!-- Aquí puedes poner más contenido -->
   </div>
 
   <script>
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        document.querySelector('.splash').style.display = 'none';
-        document.querySelector('.main-content').style.display = 'block';
-      }, 5000); // 5000 milisegundos = 5 segundos
-    });
+    setTimeout(() => {
+      document.getElementById('welcome').classList.add('hidden');
+      document.getElementById('main').style.display = 'flex';
+    }, 5000); // 5 segundos
   </script>
 </body>
 </html>
