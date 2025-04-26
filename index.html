@@ -13,102 +13,66 @@
       padding: 0;
       box-sizing: border-box;
     }
-    body, html {
+    html, body {
       width: 100%;
       height: 100%;
       font-family: Arial, sans-serif;
       background-color: #acf7f8;
-    }
-    .splash {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: #acf7f8;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-    .splash img {
-      width: 150px;
-      height: 150px;
-    }
-    .main-content {
-      display: none;
-      min-height: 100vh;
-      padding: 2rem 1rem;
       display: flex;
       flex-direction: column;
+    }
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
       align-items: center;
-      justify-content: space-between;
+      padding: 1rem;
+      text-align: center;
     }
     h1 {
       font-size: 2rem;
-      margin-top: 2rem; /* Bajamos el título */
-      text-align: center;
+      margin-bottom: 1.5rem;
       color: #000;
     }
-    .description {
-      margin-top: 1rem;
-      text-align: center;
+    p {
       font-size: 1rem;
-      color: #333;
+      margin-bottom: 1rem;
+      color: #000;
     }
     .central-image {
-       margin: 2rem 0;
-       width: 180px; /* ↓ Antes era 250px, ahora más pequeño */
+      width: 120px; /* imagen más pequeña */
       height: auto;
+      margin-bottom: 2rem;
     }
-
-    }
-    .btn-registro {
-      background-color: #008CBA;
-      color: white;
-      padding: 1rem 2rem;
-      font-size: 1.2rem;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
+    .register-button {
+      display: block;
       width: 80%;
       max-width: 300px;
-      margin-bottom: 2rem;
-      transition: background-color 0.3s;
+      padding: 1rem;
+      margin: 1rem auto;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.2rem;
+      text-decoration: none;
+      text-align: center;
     }
-    .btn-registro:hover {
-      background-color: #0072a3;
+    .register-button:hover {
+      background-color: #0056b3;
     }
   </style>
 </head>
 <body>
-  <div class="splash">
-    <img src="icon-512.png" alt="Logo" />
-  </div>
-
   <div class="main-content">
     <h1>Farmacia</h1>
-
-    <div class="description">
-      <p>Bienvenido a nuestra farmacia online.</p>
-      <p>Tu salud es nuestra prioridad.</p>
-    </div>
-
+    <p>Bienvenido a nuestra aplicación.</p>
+    <p>¡Regístrate para más información!</p>
     <img src="imagen-central.png" alt="Imagen Central" class="central-image" />
-
-  <button class="btn-registro" onclick="window.location.href='https://webqueretaro.github.io/negocio/'">
-      Registro
-    </button>
+    <a href="https://webqueretaro.github.io/negocio/" class="register-button">Registro</a>
   </div>
-
-  <script>
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        document.querySelector('.splash').style.display = 'none';
-        document.querySelector('.main-content').style.display = 'flex';
-      }, 5000); // Espera de 5 segundos después del splash
-    });
-  </script>
 </body>
 </html>
+
 
