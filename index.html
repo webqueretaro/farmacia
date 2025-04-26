@@ -25,32 +25,38 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
       padding: 1rem;
-      text-align: center;
+      position: relative;
     }
     h1 {
       font-size: 2rem;
-      margin-bottom: 1.5rem;
-      color: #000;
-    }
-    p {
-      font-size: 1rem;
+      margin-top: 3.5cm; /* Subido 1.5 cm más */
       margin-bottom: 1rem;
       color: #000;
     }
+    .welcome-text {
+      width: 90%;
+      text-align: justify; /* Más abierto (no centrado) */
+      margin-top: -1cm; /* Subimos los textos 1 cm más arriba */
+      margin-bottom: 1cm;
+    }
+    .welcome-text p {
+      font-size: 1rem;
+      margin: 0.5rem 0;
+      color: #000;
+    }
     .central-image {
-      width: 120px; /* imagen más pequeña */
+      width: 120px;
       height: auto;
-      margin-bottom: 2rem;
+      margin-bottom: 1cm; /* Se mantiene como estaba */
     }
     .register-button {
       display: block;
       width: 80%;
       max-width: 300px;
       padding: 1rem;
-      margin: 1rem auto;
+      margin-top: 2cm; /* Botón bajado 2 cm más */
       background-color: #007bff;
       color: white;
       border: none;
@@ -67,12 +73,15 @@
 <body>
   <div class="main-content">
     <h1>Farmacia</h1>
-    <p>Bienvenido a nuestra aplicación.</p>
-    <p>¡Regístrate para más información!</p>
+
+    <div class="welcome-text">
+      <p>Bienvenido a nuestra aplicación.</p>
+      <p>¡Regístrate para más información!</p>
+    </div>
+
     <img src="imagen-central.png" alt="Imagen Central" class="central-image" />
+
     <a href="https://webqueretaro.github.io/negocio/" class="register-button">Registro</a>
   </div>
 </body>
 </html>
-
-
