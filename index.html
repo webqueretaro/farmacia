@@ -50,15 +50,27 @@
       width: 120px;
       height: auto;
     }
+    #install-button {
+      display: none;
+      margin-top: 1rem;
+      background-color: #90ee90; /* Verde claro */
+      color: #000;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: bold;
+    }
     .button-container {
-      margin-top: 5rem;
+      margin-top: 3rem;
       margin-bottom: 2rem;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 1rem;
     }
-    .button-container a, .button-container button {
+    .button-container a {
       display: block;
       width: 300px;
       max-width: 90%;
@@ -71,11 +83,8 @@
       text-decoration: none;
       border-radius: 8px;
       transition: background-color 0.3s;
-      border: none;
-      cursor: pointer;
     }
-    .button-container a:hover,
-    .button-container button:hover {
+    .button-container a:hover {
       background-color: #0056b3;
     }
   </style>
@@ -93,34 +102,33 @@
     <img src="imagen-central.png" alt="Imagen Central" />
   </div>
 
+  <button id="install-button">Instalar App</button>
+
   <div class="button-container">
     <a href="https://webqueretaro.github.io/negocio/" target="_blank">Registro</a>
-    <a href="documento.pdf" download>Descarga</a>
+    <a href="#" target="_blank">Descarga</a> <!-- En el futuro será una URL -->
     <a href="#" target="_blank">Invitación</a>
-    <!-- Botón que solo aparecerá si se puede instalar -->
-    <button id="installBtn" style="display: none;">Instalar App</button>
   </div>
 
   <script>
     let deferredPrompt;
+    const installBtn = document.getElementById('install-button');
 
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-
-      const installBtn = document.getElementById('installBtn');
       installBtn.style.display = 'block';
 
       installBtn.addEventListener('click', () => {
+        installBtn.style.display = 'none';
         deferredPrompt.prompt();
         deferredPrompt.userChoice.then((choiceResult) => {
           if (choiceResult.outcome === 'accepted') {
-            console.log('Usuario aceptó la instalación');
+            console.log('App instalada');
           } else {
-            console.log('Usuario canceló la instalación');
+            console.log('Instalación cancelada');
           }
           deferredPrompt = null;
-          installBtn.style.display = 'none';
         });
       });
     });
