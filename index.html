@@ -50,18 +50,6 @@
       width: 120px;
       height: auto;
     }
-    #install-button {
-      display: none;
-      margin-top: 1rem;
-      background-color: #90ee90; /* Verde claro */
-      color: #000;
-      border: none;
-      padding: 0.8rem 1.5rem;
-      border-radius: 8px;
-      font-size: 1rem;
-      cursor: pointer;
-      font-weight: bold;
-    }
     .button-container {
       margin-top: 3rem;
       margin-bottom: 2rem;
@@ -70,7 +58,8 @@
       align-items: center;
       gap: 1rem;
     }
-    .button-container a {
+    .button-container a,
+    .button-container button {
       display: block;
       width: 300px;
       max-width: 90%;
@@ -78,14 +67,25 @@
       padding: 1rem 2rem;
       font-size: 1.2rem;
       letter-spacing: 2px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .button-container a {
       background-color: #007bff;
       color: #fff;
       text-decoration: none;
-      border-radius: 8px;
-      transition: background-color 0.3s;
     }
     .button-container a:hover {
       background-color: #0056b3;
+    }
+    #installBtn {
+      background-color: #28a745;
+      color: #fff;
+    }
+    #installBtn:hover {
+      background-color: #218838;
     }
   </style>
 </head>
@@ -102,33 +102,37 @@
     <img src="imagen-central.png" alt="Imagen Central" />
   </div>
 
-  <button id="install-button">Instalar App</button>
+  <!-- Botón de instalación (se muestra solo si se permite) -->
+  <div class="button-container" id="install-container" style="display: none;">
+    <button id="installBtn">Instalar App</button>
+  </div>
 
   <div class="button-container">
     <a href="https://webqueretaro.github.io/negocio/" target="_blank">Registro</a>
-    <a href="#" target="_blank">Descarga</a> <!-- En el futuro será una URL -->
+    <a href="https://ejemplo.com/documento" target="_blank">Descarga</a>
     <a href="#" target="_blank">Invitación</a>
   </div>
 
   <script>
     let deferredPrompt;
-    const installBtn = document.getElementById('install-button');
+    const installContainer = document.getElementById('install-container');
+    const installBtn = document.getElementById('installBtn');
 
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-      installBtn.style.display = 'block';
+      installContainer.style.display = 'flex';
 
       installBtn.addEventListener('click', () => {
-        installBtn.style.display = 'none';
         deferredPrompt.prompt();
         deferredPrompt.userChoice.then((choiceResult) => {
           if (choiceResult.outcome === 'accepted') {
-            console.log('App instalada');
+            console.log('Instalación aceptada');
           } else {
-            console.log('Instalación cancelada');
+            console.log('Instalación rechazada');
           }
           deferredPrompt = null;
+          installContainer.style.display = 'none';
         });
       });
     });
@@ -136,4 +140,3 @@
 
 </body>
 </html>
-
